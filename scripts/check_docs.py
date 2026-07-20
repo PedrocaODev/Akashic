@@ -11,7 +11,7 @@ from pathlib import Path
 from urllib.parse import urlsplit
 
 ROOT = Path(__file__).resolve().parents[1]
-ARTIFACT = ROOT / "openspec/changes/bootstrap-rust-harness/parsed-requirements.json"
+ARTIFACT = ROOT / "openspec/changes/archive/2026-07-20-bootstrap-rust-harness/parsed-requirements.json"
 LINK = re.compile(r"!?(?:\[[^\]]*\])\(([^)]+)\)")
 REQUIRED = (
     "akashic.local",

@@ -1,6 +1,6 @@
 # Development
 
-The bootstrap Rust package is runnable, but it is not an installation or product-release workflow. The [implementation plan](implementation-plan.md) and [qualification matrix](qualification-matrix.md) define the through-v1 evidence path; normative bootstrap behavior remains in [OpenSpec](../openspec/changes/bootstrap-rust-harness/).
+The bootstrap Rust package is runnable, but it is not an installation or product-release workflow. The [implementation plan](implementation-plan.md) and [qualification matrix](qualification-matrix.md) define the through-v1 evidence path; normative bootstrap behavior remains in [OpenSpec](../openspec/specs/).
 
 Start with the relevant accepted decision and OpenSpec change. Keep authored explanations in Markdown and keep normative requirements in OpenSpec. Do not edit `openspec/**` without ownership transfer.
 
