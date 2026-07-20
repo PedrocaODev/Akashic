@@ -1,0 +1,338 @@
+{
+  "id": "bootstrap-rust-harness",
+  "title": "bootstrap-rust-harness",
+  "deltaCount": 11,
+  "deltas": [
+    {
+      "spec": "project-foundation",
+      "operation": "ADDED",
+      "description": "Add requirement: The executable MUST support exactly `akashic daemon`, `akashic tui`, `akashic run --jsonl`, `akashic doctor`, and `akashic version`; CLI parsing MUST occur before mode entry, and invalid syntax that does not successfully select `doctor` MUST emit generic `usage.invalid` JSON on stderr, empty stdout, and exit 2; `daemon` MUST start one daemon and block until bounded shutdown; `run --jsonl` MUST connect to the daemon and accept only bootstrap handshake/health JSONL on stdin while writing protocol records to stdout and diagnostics to stderr; once `akashic doctor` mode is successfully selected, doctor MUST wrap all subsequent config, runtime-directory, socket, daemon availability, handshake, and health outcomes in exactly one stdout JSON object with `status` enum `ok|degraded|error`, `version` semver string, `protocol` object `{ \"identifier\": \"akashic.local\", \"version\": 1 }`, and `checks` array objects containing `name` string, `status` enum `ok|warning|error`, nullable stable `code`, and redacted `message` string, MUST NOT emit the generic CLI error object for those outcomes, MUST return overall `degraded` with a `daemon` check code `lifecycle.daemon_unavailable` and exit 4 when no socket/listener exists but local prerequisites are safe, MUST return overall `ok` and exit 0 after successful checks and health, and MUST return overall `error` and exit 1 for invalid config/path/socket/handshake; `version` MUST print exactly `akashic <semver>` plus newline and exit zero without daemon access; `tui` MUST connect, handshake, display only a minimal daemon health/version screen, support quit/cancel, and not claim task functionality; unknown or conflicting usage MUST produce a structured failure and nonzero exit.",
+      "requirement": {
+        "text": "The executable MUST support exactly `akashic daemon`, `akashic tui`, `akashic run --jsonl`, `akashic doctor`, and `akashic version`; CLI parsing MUST occur before mode entry, and invalid syntax that does not successfully select `doctor` MUST emit generic `usage.invalid` JSON on stderr, empty stdout, and exit 2; `daemon` MUST start one daemon and block until bounded shutdown; `run --jsonl` MUST connect to the daemon and accept only bootstrap handshake/health JSONL on stdin while writing protocol records to stdout and diagnostics to stderr; once `akashic doctor` mode is successfully selected, doctor MUST wrap all subsequent config, runtime-directory, socket, daemon availability, handshake, and health outcomes in exactly one stdout JSON object with `status` enum `ok|degraded|error`, `version` semver string, `protocol` object `{ \"identifier\": \"akashic.local\", \"version\": 1 }`, and `checks` array objects containing `name` string, `status` enum `ok|warning|error`, nullable stable `code`, and redacted `message` string, MUST NOT emit the generic CLI error object for those outcomes, MUST return overall `degraded` with a `daemon` check code `lifecycle.daemon_unavailable` and exit 4 when no socket/listener exists but local prerequisites are safe, MUST return overall `ok` and exit 0 after successful checks and health, and MUST return overall `error` and exit 1 for invalid config/path/socket/handshake; `version` MUST print exactly `akashic <semver>` plus newline and exit zero without daemon access; `tui` MUST connect, handshake, display only a minimal daemon health/version screen, support quit/cancel, and not claim task functionality; unknown or conflicting usage MUST produce a structured failure and nonzero exit.",
+        "scenarios": [
+          {
+            "rawText": "- **WHEN** `akashic version` is run\n- **THEN** stdout MUST contain exactly one `akashic <semver>` line, the process MUST exit zero, and no daemon access MUST occur"
+          },
+          {
+            "rawText": "- **WHEN** an unknown command, option, or conflicting mode is supplied\n- **THEN** the process MUST return a `usage.invalid` structured failure and exit nonzero"
+          },
+          {
+            "rawText": "- **WHEN** CLI syntax is invalid and `akashic doctor` mode is not successfully selected\n- **THEN** stderr MUST contain generic `usage.invalid` JSON, stdout MUST be empty, and the process MUST exit 2"
+          },
+          {
+            "rawText": "- **WHEN** `akashic doctor` is successfully selected and config loading fails\n- **THEN** stdout MUST contain exactly one doctor result with overall `error`, a check carrying `config.invalid` or the applicable config code, and no generic CLI error object"
+          },
+          {
+            "rawText": "- **WHEN** `akashic doctor` is successfully selected, local prerequisites are safe, and no socket/listener exists\n- **THEN** stdout MUST contain exactly one doctor result with overall `degraded`, a `daemon` check carrying `lifecycle.daemon_unavailable`, and the process MUST exit 4"
+          },
+          {
+            "rawText": "- **WHEN** `akashic doctor` is successfully selected and a safe socket fails handshake or health validation\n- **THEN** stdout MUST contain exactly one doctor result with overall `error` and a check carrying the underlying protocol or authorization code, and the process MUST exit 1"
+          }
+        ]
+      },
+      "requirements": [
+        {
+          "text": "The executable MUST support exactly `akashic daemon`, `akashic tui`, `akashic run --jsonl`, `akashic doctor`, and `akashic version`; CLI parsing MUST occur before mode entry, and invalid syntax that does not successfully select `doctor` MUST emit generic `usage.invalid` JSON on stderr, empty stdout, and exit 2; `daemon` MUST start one daemon and block until bounded shutdown; `run --jsonl` MUST connect to the daemon and accept only bootstrap handshake/health JSONL on stdin while writing protocol records to stdout and diagnostics to stderr; once `akashic doctor` mode is successfully selected, doctor MUST wrap all subsequent config, runtime-directory, socket, daemon availability, handshake, and health outcomes in exactly one stdout JSON object with `status` enum `ok|degraded|error`, `version` semver string, `protocol` object `{ \"identifier\": \"akashic.local\", \"version\": 1 }`, and `checks` array objects containing `name` string, `status` enum `ok|warning|error`, nullable stable `code`, and redacted `message` string, MUST NOT emit the generic CLI error object for those outcomes, MUST return overall `degraded` with a `daemon` check code `lifecycle.daemon_unavailable` and exit 4 when no socket/listener exists but local prerequisites are safe, MUST return overall `ok` and exit 0 after successful checks and health, and MUST return overall `error` and exit 1 for invalid config/path/socket/handshake; `version` MUST print exactly `akashic <semver>` plus newline and exit zero without daemon access; `tui` MUST connect, handshake, display only a minimal daemon health/version screen, support quit/cancel, and not claim task functionality; unknown or conflicting usage MUST produce a structured failure and nonzero exit.",
+          "scenarios": [
+            {
+              "rawText": "- **WHEN** `akashic version` is run\n- **THEN** stdout MUST contain exactly one `akashic <semver>` line, the process MUST exit zero, and no daemon access MUST occur"
+            },
+            {
+              "rawText": "- **WHEN** an unknown command, option, or conflicting mode is supplied\n- **THEN** the process MUST return a `usage.invalid` structured failure and exit nonzero"
+            },
+            {
+              "rawText": "- **WHEN** CLI syntax is invalid and `akashic doctor` mode is not successfully selected\n- **THEN** stderr MUST contain generic `usage.invalid` JSON, stdout MUST be empty, and the process MUST exit 2"
+            },
+            {
+              "rawText": "- **WHEN** `akashic doctor` is successfully selected and config loading fails\n- **THEN** stdout MUST contain exactly one doctor result with overall `error`, a check carrying `config.invalid` or the applicable config code, and no generic CLI error object"
+            },
+            {
+              "rawText": "- **WHEN** `akashic doctor` is successfully selected, local prerequisites are safe, and no socket/listener exists\n- **THEN** stdout MUST contain exactly one doctor result with overall `degraded`, a `daemon` check carrying `lifecycle.daemon_unavailable`, and the process MUST exit 4"
+            },
+            {
+              "rawText": "- **WHEN** `akashic doctor` is successfully selected and a safe socket fails handshake or health validation\n- **THEN** stdout MUST contain exactly one doctor result with overall `error` and a check carrying the underlying protocol or authorization code, and the process MUST exit 1"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "spec": "project-foundation",
+      "operation": "ADDED",
+      "description": "Add requirement: Configuration MUST use built-in defaults below user config, project config, `AKASHIC_*` environment overrides, and global CLI overrides in that order; user config MUST be `${XDG_CONFIG_HOME:-$HOME/.config}/akashic/config.toml`; project config MUST be `.akashic/config.toml` in the nearest Git root from the current directory or in the current directory when no Git root exists; both files MUST require `config_version = 1`; supported keys and defaults MUST be `log_level = \"info\"`, `shutdown_timeout_seconds = 10`, and `jsonl_max_line_bytes = 1048576`; supported environment names MUST be `AKASHIC_LOG_LEVEL`, `AKASHIC_SHUTDOWN_TIMEOUT_SECONDS`, and `AKASHIC_JSONL_MAX_LINE_BYTES`; supported global CLI flags before the command MUST be `--log-level`, `--shutdown-timeout-seconds`, and `--jsonl-max-line-bytes`; log level MUST be exactly one of `error|warn|info|debug|trace`, timeout MUST be an integer from 1 through 600, line size MUST be an integer from 1024 through 1048576, unknown keys MUST fail closed, raw secret fields MUST be rejected, and future credentials MUST use references rather than values.",
+      "requirement": {
+        "text": "Configuration MUST use built-in defaults below user config, project config, `AKASHIC_*` environment overrides, and global CLI overrides in that order; user config MUST be `${XDG_CONFIG_HOME:-$HOME/.config}/akashic/config.toml`; project config MUST be `.akashic/config.toml` in the nearest Git root from the current directory or in the current directory when no Git root exists; both files MUST require `config_version = 1`; supported keys and defaults MUST be `log_level = \"info\"`, `shutdown_timeout_seconds = 10`, and `jsonl_max_line_bytes = 1048576`; supported environment names MUST be `AKASHIC_LOG_LEVEL`, `AKASHIC_SHUTDOWN_TIMEOUT_SECONDS`, and `AKASHIC_JSONL_MAX_LINE_BYTES`; supported global CLI flags before the command MUST be `--log-level`, `--shutdown-timeout-seconds`, and `--jsonl-max-line-bytes`; log level MUST be exactly one of `error|warn|info|debug|trace`, timeout MUST be an integer from 1 through 600, line size MUST be an integer from 1024 through 1048576, unknown keys MUST fail closed, raw secret fields MUST be rejected, and future credentials MUST use references rather than values.",
+        "scenarios": [
+          {
+            "rawText": "- **WHEN** a setting appears at several supported layers\n- **THEN** the CLI value MUST override environment, project, user, and built-in values in that order"
+          },
+          {
+            "rawText": "- **WHEN** a file omits `config_version`, declares a version other than 1, contains an unknown key, secret-like key, invalid type, or out-of-range value\n- **THEN** loading MUST fail closed with `config.invalid`, `config.unsupported_version`, or `config.secret_forbidden` as applicable"
+          }
+        ]
+      },
+      "requirements": [
+        {
+          "text": "Configuration MUST use built-in defaults below user config, project config, `AKASHIC_*` environment overrides, and global CLI overrides in that order; user config MUST be `${XDG_CONFIG_HOME:-$HOME/.config}/akashic/config.toml`; project config MUST be `.akashic/config.toml` in the nearest Git root from the current directory or in the current directory when no Git root exists; both files MUST require `config_version = 1`; supported keys and defaults MUST be `log_level = \"info\"`, `shutdown_timeout_seconds = 10`, and `jsonl_max_line_bytes = 1048576`; supported environment names MUST be `AKASHIC_LOG_LEVEL`, `AKASHIC_SHUTDOWN_TIMEOUT_SECONDS`, and `AKASHIC_JSONL_MAX_LINE_BYTES`; supported global CLI flags before the command MUST be `--log-level`, `--shutdown-timeout-seconds`, and `--jsonl-max-line-bytes`; log level MUST be exactly one of `error|warn|info|debug|trace`, timeout MUST be an integer from 1 through 600, line size MUST be an integer from 1024 through 1048576, unknown keys MUST fail closed, raw secret fields MUST be rejected, and future credentials MUST use references rather than values.",
+          "scenarios": [
+            {
+              "rawText": "- **WHEN** a setting appears at several supported layers\n- **THEN** the CLI value MUST override environment, project, user, and built-in values in that order"
+            },
+            {
+              "rawText": "- **WHEN** a file omits `config_version`, declares a version other than 1, contains an unknown key, secret-like key, invalid type, or out-of-range value\n- **THEN** loading MUST fail closed with `config.invalid`, `config.unsupported_version`, or `config.secret_forbidden` as applicable"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "spec": "project-foundation",
+      "operation": "ADDED",
+      "description": "Add requirement: Every bootstrap error object MUST contain `code` as a stable string, `message` as a redacted string, and `retryable` as a boolean, and MAY contain `correlation_id` as a UUID string; bootstrap MUST support at minimum `usage.invalid`, `config.invalid`, `config.unsupported_version`, `config.secret_forbidden`, `protocol.malformed`, `protocol.unsupported_version`, `protocol.oversized`, `authorization.peer_uid`, `lifecycle.daemon_running`, `lifecycle.daemon_unavailable`, `lifecycle.shutdown_timeout`, and `internal.unexpected`; `retryable` MUST be false for `usage.invalid`, every `config.*`, `protocol.malformed`, `protocol.unsupported_version`, `protocol.oversized`, and `authorization.peer_uid`, and MUST be true for `lifecycle.daemon_running`, `lifecycle.daemon_unavailable`, `lifecycle.shutdown_timeout`, and `internal.unexpected`; secret-like names are case-insensitive names containing `token`, `secret`, `password`, `api_key`, `authorization`, `cookie`, or `credential`, and exact credential-broker-resolved values are secret-like; logs MUST redact these values before serialization and MUST NOT log full environment or config contents.",
+      "requirement": {
+        "text": "Every bootstrap error object MUST contain `code` as a stable string, `message` as a redacted string, and `retryable` as a boolean, and MAY contain `correlation_id` as a UUID string; bootstrap MUST support at minimum `usage.invalid`, `config.invalid`, `config.unsupported_version`, `config.secret_forbidden`, `protocol.malformed`, `protocol.unsupported_version`, `protocol.oversized`, `authorization.peer_uid`, `lifecycle.daemon_running`, `lifecycle.daemon_unavailable`, `lifecycle.shutdown_timeout`, and `internal.unexpected`; `retryable` MUST be false for `usage.invalid`, every `config.*`, `protocol.malformed`, `protocol.unsupported_version`, `protocol.oversized`, and `authorization.peer_uid`, and MUST be true for `lifecycle.daemon_running`, `lifecycle.daemon_unavailable`, `lifecycle.shutdown_timeout`, and `internal.unexpected`; secret-like names are case-insensitive names containing `token`, `secret`, `password`, `api_key`, `authorization`, `cookie`, or `credential`, and exact credential-broker-resolved values are secret-like; logs MUST redact these values before serialization and MUST NOT log full environment or config contents.",
+        "scenarios": [
+          {
+            "rawText": "- **WHEN** invalid input or a secret-bearing diagnostic produces an error\n- **THEN** the response MUST use the applicable stable code and MUST contain no raw secret value"
+          }
+        ]
+      },
+      "requirements": [
+        {
+          "text": "Every bootstrap error object MUST contain `code` as a stable string, `message` as a redacted string, and `retryable` as a boolean, and MAY contain `correlation_id` as a UUID string; bootstrap MUST support at minimum `usage.invalid`, `config.invalid`, `config.unsupported_version`, `config.secret_forbidden`, `protocol.malformed`, `protocol.unsupported_version`, `protocol.oversized`, `authorization.peer_uid`, `lifecycle.daemon_running`, `lifecycle.daemon_unavailable`, `lifecycle.shutdown_timeout`, and `internal.unexpected`; `retryable` MUST be false for `usage.invalid`, every `config.*`, `protocol.malformed`, `protocol.unsupported_version`, `protocol.oversized`, and `authorization.peer_uid`, and MUST be true for `lifecycle.daemon_running`, `lifecycle.daemon_unavailable`, `lifecycle.shutdown_timeout`, and `internal.unexpected`; secret-like names are case-insensitive names containing `token`, `secret`, `password`, `api_key`, `authorization`, `cookie`, or `credential`, and exact credential-broker-resolved values are secret-like; logs MUST redact these values before serialization and MUST NOT log full environment or config contents.",
+          "scenarios": [
+            {
+              "rawText": "- **WHEN** invalid input or a secret-bearing diagnostic produces an error\n- **THEN** the response MUST use the applicable stable code and MUST contain no raw secret value"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "spec": "project-foundation",
+      "operation": "ADDED",
+      "description": "Add requirement: Non-JSONL CLI or startup errors before successful mode selection, excluding post-selection doctor results, MUST emit exactly one JSON error object on process stderr and nothing on process stdout; after valid framing, `akashic run --jsonl` request-level protocol errors MUST use `error.response` on that process stdout; after peer authentication, daemon socket request errors MUST use `error.response` over that client's Unix socket connection and MUST NOT use daemon process stdout; post-selection doctor config, runtime, socket, availability, handshake, and health outcomes MUST use exactly one doctor result on stdout instead of the generic error object; diagnostics MUST remain on stderr; CLI or startup exit codes MUST be 2 for usage/configuration, 3 for protocol/authorization, 4 for `lifecycle.daemon_running`, 124 for `lifecycle.shutdown_timeout`, and 1 for internal errors; request-level JSONL errors MUST NOT terminate a healthy stream unless framing continuation is unsafe.",
+      "requirement": {
+        "text": "Non-JSONL CLI or startup errors before successful mode selection, excluding post-selection doctor results, MUST emit exactly one JSON error object on process stderr and nothing on process stdout; after valid framing, `akashic run --jsonl` request-level protocol errors MUST use `error.response` on that process stdout; after peer authentication, daemon socket request errors MUST use `error.response` over that client's Unix socket connection and MUST NOT use daemon process stdout; post-selection doctor config, runtime, socket, availability, handshake, and health outcomes MUST use exactly one doctor result on stdout instead of the generic error object; diagnostics MUST remain on stderr; CLI or startup exit codes MUST be 2 for usage/configuration, 3 for protocol/authorization, 4 for `lifecycle.daemon_running`, 124 for `lifecycle.shutdown_timeout`, and 1 for internal errors; request-level JSONL errors MUST NOT terminate a healthy stream unless framing continuation is unsafe.",
+        "scenarios": [
+          {
+            "rawText": "- **WHEN** a non-JSONL CLI command fails validation\n- **THEN** stderr MUST contain exactly one error object, stdout MUST be empty, and the mapped exit code MUST be returned"
+          },
+          {
+            "rawText": "- **WHEN** a valid frame requests an unsupported operation\n- **THEN** stdout MUST receive one `error.response`, diagnostics MUST remain on stderr, and the stream MUST continue"
+          },
+          {
+            "rawText": "- **WHEN** an authenticated daemon client sends a request that produces a protocol error\n- **THEN** the client socket MUST receive one `error.response`, daemon stdout MUST remain unused, and diagnostics MUST remain on stderr"
+          }
+        ]
+      },
+      "requirements": [
+        {
+          "text": "Non-JSONL CLI or startup errors before successful mode selection, excluding post-selection doctor results, MUST emit exactly one JSON error object on process stderr and nothing on process stdout; after valid framing, `akashic run --jsonl` request-level protocol errors MUST use `error.response` on that process stdout; after peer authentication, daemon socket request errors MUST use `error.response` over that client's Unix socket connection and MUST NOT use daemon process stdout; post-selection doctor config, runtime, socket, availability, handshake, and health outcomes MUST use exactly one doctor result on stdout instead of the generic error object; diagnostics MUST remain on stderr; CLI or startup exit codes MUST be 2 for usage/configuration, 3 for protocol/authorization, 4 for `lifecycle.daemon_running`, 124 for `lifecycle.shutdown_timeout`, and 1 for internal errors; request-level JSONL errors MUST NOT terminate a healthy stream unless framing continuation is unsafe.",
+          "scenarios": [
+            {
+              "rawText": "- **WHEN** a non-JSONL CLI command fails validation\n- **THEN** stderr MUST contain exactly one error object, stdout MUST be empty, and the mapped exit code MUST be returned"
+            },
+            {
+              "rawText": "- **WHEN** a valid frame requests an unsupported operation\n- **THEN** stdout MUST receive one `error.response`, diagnostics MUST remain on stderr, and the stream MUST continue"
+            },
+            {
+              "rawText": "- **WHEN** an authenticated daemon client sends a request that produces a protocol error\n- **THEN** the client socket MUST receive one `error.response`, daemon stdout MUST remain unused, and diagnostics MUST remain on stderr"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "spec": "project-foundation",
+      "operation": "ADDED",
+      "description": "Add requirement: SIGINT and SIGTERM MUST initiate graceful shutdown, any second SIGINT after graceful shutdown begins MUST immediately terminate with exit 130, any second SIGTERM after graceful shutdown begins MUST immediately terminate with exit 143 regardless of the first signal, shutdown MUST stop accepting requests, close the listener, cancel bootstrap-owned children, wait no longer than the configured timeout default of 10 seconds, and then emit `lifecycle.shutdown_timeout` exactly once to stderr and exit 124; clean requested shutdown MUST exit zero, and bootstrap MUST NOT use future task terminal outcome taxonomy.",
+      "requirement": {
+        "text": "SIGINT and SIGTERM MUST initiate graceful shutdown, any second SIGINT after graceful shutdown begins MUST immediately terminate with exit 130, any second SIGTERM after graceful shutdown begins MUST immediately terminate with exit 143 regardless of the first signal, shutdown MUST stop accepting requests, close the listener, cancel bootstrap-owned children, wait no longer than the configured timeout default of 10 seconds, and then emit `lifecycle.shutdown_timeout` exactly once to stderr and exit 124; clean requested shutdown MUST exit zero, and bootstrap MUST NOT use future task terminal outcome taxonomy.",
+        "scenarios": [
+          {
+            "rawText": "- **WHEN** the first SIGINT or SIGTERM is received and children finish within the timeout\n- **THEN** the listener MUST close, children MUST be cancelled, and the process MUST exit zero"
+          },
+          {
+            "rawText": "- **WHEN** children do not finish before the configured timeout\n- **THEN** the process MUST force termination and return `lifecycle.shutdown_timeout` with nonzero status"
+          }
+        ]
+      },
+      "requirements": [
+        {
+          "text": "SIGINT and SIGTERM MUST initiate graceful shutdown, any second SIGINT after graceful shutdown begins MUST immediately terminate with exit 130, any second SIGTERM after graceful shutdown begins MUST immediately terminate with exit 143 regardless of the first signal, shutdown MUST stop accepting requests, close the listener, cancel bootstrap-owned children, wait no longer than the configured timeout default of 10 seconds, and then emit `lifecycle.shutdown_timeout` exactly once to stderr and exit 124; clean requested shutdown MUST exit zero, and bootstrap MUST NOT use future task terminal outcome taxonomy.",
+          "scenarios": [
+            {
+              "rawText": "- **WHEN** the first SIGINT or SIGTERM is received and children finish within the timeout\n- **THEN** the listener MUST close, children MUST be cancelled, and the process MUST exit zero"
+            },
+            {
+              "rawText": "- **WHEN** children do not finish before the configured timeout\n- **THEN** the process MUST force termination and return `lifecycle.shutdown_timeout` with nonzero status"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "spec": "runtime-contracts",
+      "operation": "ADDED",
+      "description": "Add requirement: The daemon MUST use `${XDG_RUNTIME_DIR}/akashic` only when the XDG runtime path is absolute, its ancestors are non-symlinked and owned by root or the current UID and not group/other writable, and the selected runtime base and its `akashic` child are current-UID-owned, non-symlinked, and not group/other accessible, otherwise it MUST use `${XDG_STATE_HOME:-$HOME/.local/state}/akashic/run` with the same selected-base and child checks; ordinary root-owned ancestors such as `/`, `/run`, and `/home` MUST be allowed when they are not group/other writable; names MUST be `daemon.sock` and `daemon.lock`; the Akashic directory MUST be mode 0700, lock and socket MUST be mode 0600, creation MUST use umask 077, and symlinks or non-owned components MUST be rejected.",
+      "requirement": {
+        "text": "The daemon MUST use `${XDG_RUNTIME_DIR}/akashic` only when the XDG runtime path is absolute, its ancestors are non-symlinked and owned by root or the current UID and not group/other writable, and the selected runtime base and its `akashic` child are current-UID-owned, non-symlinked, and not group/other accessible, otherwise it MUST use `${XDG_STATE_HOME:-$HOME/.local/state}/akashic/run` with the same selected-base and child checks; ordinary root-owned ancestors such as `/`, `/run`, and `/home` MUST be allowed when they are not group/other writable; names MUST be `daemon.sock` and `daemon.lock`; the Akashic directory MUST be mode 0700, lock and socket MUST be mode 0600, creation MUST use umask 077, and symlinks or non-owned components MUST be rejected.",
+        "scenarios": [
+          {
+            "rawText": "- **WHEN** a safe absolute XDG runtime directory exists\n- **THEN** the daemon MUST use its `akashic` child; otherwise it MUST use the stated state fallback"
+          },
+          {
+            "rawText": "- **WHEN** a trusted ancestor is symlinked, owned by neither root nor the current UID, or group/other writable, or when the selected per-user base or Akashic child is symlinked, not current-UID-owned, or group/other accessible\n- **THEN** startup MUST fail closed without binding or unlinking a socket"
+          }
+        ]
+      },
+      "requirements": [
+        {
+          "text": "The daemon MUST use `${XDG_RUNTIME_DIR}/akashic` only when the XDG runtime path is absolute, its ancestors are non-symlinked and owned by root or the current UID and not group/other writable, and the selected runtime base and its `akashic` child are current-UID-owned, non-symlinked, and not group/other accessible, otherwise it MUST use `${XDG_STATE_HOME:-$HOME/.local/state}/akashic/run` with the same selected-base and child checks; ordinary root-owned ancestors such as `/`, `/run`, and `/home` MUST be allowed when they are not group/other writable; names MUST be `daemon.sock` and `daemon.lock`; the Akashic directory MUST be mode 0700, lock and socket MUST be mode 0600, creation MUST use umask 077, and symlinks or non-owned components MUST be rejected.",
+          "scenarios": [
+            {
+              "rawText": "- **WHEN** a safe absolute XDG runtime directory exists\n- **THEN** the daemon MUST use its `akashic` child; otherwise it MUST use the stated state fallback"
+            },
+            {
+              "rawText": "- **WHEN** a trusted ancestor is symlinked, owned by neither root nor the current UID, or group/other writable, or when the selected per-user base or Akashic child is symlinked, not current-UID-owned, or group/other accessible\n- **THEN** startup MUST fail closed without binding or unlinking a socket"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "spec": "runtime-contracts",
+      "operation": "ADDED",
+      "description": "Add requirement: The daemon MUST acquire an exclusive nonblocking lock on `daemon.lock` before inspecting, removing, or binding `daemon.sock`; if the lock is unavailable it MUST report `lifecycle.daemon_running` and touch nothing; while holding the lock, an absent socket MAY be bound, an owned-by-other-UID socket, symlink, or non-socket MUST fail closed, a current-user socket MUST be handshaken, a responsive socket MUST cause conflict without unlinking, and only connection-refused/no-listener evidence followed by unchanged inode/device recheck under the held lock MAY permit unlink and bind; shutdown cleanup MUST occur only while holding the lock and only when inode/device still match the socket created by that daemon.",
+      "requirement": {
+        "text": "The daemon MUST acquire an exclusive nonblocking lock on `daemon.lock` before inspecting, removing, or binding `daemon.sock`; if the lock is unavailable it MUST report `lifecycle.daemon_running` and touch nothing; while holding the lock, an absent socket MAY be bound, an owned-by-other-UID socket, symlink, or non-socket MUST fail closed, a current-user socket MUST be handshaken, a responsive socket MUST cause conflict without unlinking, and only connection-refused/no-listener evidence followed by unchanged inode/device recheck under the held lock MAY permit unlink and bind; shutdown cleanup MUST occur only while holding the lock and only when inode/device still match the socket created by that daemon.",
+        "scenarios": [
+          {
+            "rawText": "- **WHEN** another daemon holds the lock or a current-user socket responds\n- **THEN** startup MUST return `lifecycle.daemon_running` and MUST NOT unlink or modify the active socket"
+          },
+          {
+            "rawText": "- **WHEN** the lock is held, the socket is current-user owned, connection is refused with no listener, and inode/device are unchanged\n- **THEN** startup MAY unlink that socket and bind a new one"
+          }
+        ]
+      },
+      "requirements": [
+        {
+          "text": "The daemon MUST acquire an exclusive nonblocking lock on `daemon.lock` before inspecting, removing, or binding `daemon.sock`; if the lock is unavailable it MUST report `lifecycle.daemon_running` and touch nothing; while holding the lock, an absent socket MAY be bound, an owned-by-other-UID socket, symlink, or non-socket MUST fail closed, a current-user socket MUST be handshaken, a responsive socket MUST cause conflict without unlinking, and only connection-refused/no-listener evidence followed by unchanged inode/device recheck under the held lock MAY permit unlink and bind; shutdown cleanup MUST occur only while holding the lock and only when inode/device still match the socket created by that daemon.",
+          "scenarios": [
+            {
+              "rawText": "- **WHEN** another daemon holds the lock or a current-user socket responds\n- **THEN** startup MUST return `lifecycle.daemon_running` and MUST NOT unlink or modify the active socket"
+            },
+            {
+              "rawText": "- **WHEN** the lock is held, the socket is current-user owned, connection is refused with no listener, and inode/device are unchanged\n- **THEN** startup MAY unlink that socket and bind a new one"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "spec": "runtime-contracts",
+      "operation": "ADDED",
+      "description": "Add requirement: The daemon MUST authorize the peer UID using Linux `SO_PEERCRED` or an equivalent supported primitive before handshake parsing or request processing, and an unauthorized peer MUST receive or cause `authorization.peer_uid` without an effect.",
+      "requirement": {
+        "text": "The daemon MUST authorize the peer UID using Linux `SO_PEERCRED` or an equivalent supported primitive before handshake parsing or request processing, and an unauthorized peer MUST receive or cause `authorization.peer_uid` without an effect.",
+        "scenarios": [
+          {
+            "rawText": "- **WHEN** the connecting UID differs from the daemon UID\n- **THEN** the daemon MUST reject the connection before handshake processing"
+          }
+        ]
+      },
+      "requirements": [
+        {
+          "text": "The daemon MUST authorize the peer UID using Linux `SO_PEERCRED` or an equivalent supported primitive before handshake parsing or request processing, and an unauthorized peer MUST receive or cause `authorization.peer_uid` without an effect.",
+          "scenarios": [
+            {
+              "rawText": "- **WHEN** the connecting UID differs from the daemon UID\n- **THEN** the daemon MUST reject the connection before handshake processing"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "spec": "runtime-contracts",
+      "operation": "ADDED",
+      "description": "Add requirement: After peer UID authorization, the first valid frame MUST be `handshake.request`; `health.request` before a successful handshake MUST return `protocol.malformed` without an effect; every response and error MUST receive a new UUID `id`; every response and error `correlation_id` MUST equal the triggering request `id`; and the following canonical bootstrap objects are valid illustrative examples whose UUID and semver placeholder values vary at runtime while their field names, types, kinds, payload shape, and correlation relationships are normative: `{\"protocol\":\"akashic.local\",\"version\":1,\"kind\":\"handshake.request\",\"id\":\"11111111-1111-4111-8111-111111111111\",\"payload\":{\"client_role\":\"jsonl\",\"client_version\":\"0.1.0\",\"client_instance_id\":\"22222222-2222-4222-8222-222222222222\"}}`, `{\"protocol\":\"akashic.local\",\"version\":1,\"kind\":\"handshake.response\",\"id\":\"33333333-3333-4333-8333-333333333333\",\"correlation_id\":\"11111111-1111-4111-8111-111111111111\",\"payload\":{\"daemon_version\":\"0.1.0\",\"daemon_instance_id\":\"44444444-4444-4444-8444-444444444444\",\"protocol_version\":1,\"capabilities\":[\"health\"]}}`, `{\"protocol\":\"akashic.local\",\"version\":1,\"kind\":\"health.request\",\"id\":\"55555555-5555-4555-8555-555555555555\",\"payload\":{}}`, `{\"protocol\":\"akashic.local\",\"version\":1,\"kind\":\"health.response\",\"id\":\"66666666-6666-4666-8666-666666666666\",\"correlation_id\":\"55555555-5555-4555-8555-555555555555\",\"payload\":{\"status\":\"ok\",\"daemon_version\":\"0.1.0\",\"daemon_instance_id\":\"44444444-4444-4444-8444-444444444444\",\"protocol_version\":1}}`, and `{\"protocol\":\"akashic.local\",\"version\":1,\"kind\":\"error.response\",\"id\":\"77777777-7777-4777-8777-777777777777\",\"correlation_id\":\"55555555-5555-4555-8555-555555555555\",\"error\":{\"code\":\"protocol.malformed\",\"message\":\"malformed request\",\"retryable\":false}}`.",
+      "requirement": {
+        "text": "After peer UID authorization, the first valid frame MUST be `handshake.request`; `health.request` before a successful handshake MUST return `protocol.malformed` without an effect; every response and error MUST receive a new UUID `id`; every response and error `correlation_id` MUST equal the triggering request `id`; and the following canonical bootstrap objects are valid illustrative examples whose UUID and semver placeholder values vary at runtime while their field names, types, kinds, payload shape, and correlation relationships are normative: `{\"protocol\":\"akashic.local\",\"version\":1,\"kind\":\"handshake.request\",\"id\":\"11111111-1111-4111-8111-111111111111\",\"payload\":{\"client_role\":\"jsonl\",\"client_version\":\"0.1.0\",\"client_instance_id\":\"22222222-2222-4222-8222-222222222222\"}}`, `{\"protocol\":\"akashic.local\",\"version\":1,\"kind\":\"handshake.response\",\"id\":\"33333333-3333-4333-8333-333333333333\",\"correlation_id\":\"11111111-1111-4111-8111-111111111111\",\"payload\":{\"daemon_version\":\"0.1.0\",\"daemon_instance_id\":\"44444444-4444-4444-8444-444444444444\",\"protocol_version\":1,\"capabilities\":[\"health\"]}}`, `{\"protocol\":\"akashic.local\",\"version\":1,\"kind\":\"health.request\",\"id\":\"55555555-5555-4555-8555-555555555555\",\"payload\":{}}`, `{\"protocol\":\"akashic.local\",\"version\":1,\"kind\":\"health.response\",\"id\":\"66666666-6666-4666-8666-666666666666\",\"correlation_id\":\"55555555-5555-4555-8555-555555555555\",\"payload\":{\"status\":\"ok\",\"daemon_version\":\"0.1.0\",\"daemon_instance_id\":\"44444444-4444-4444-8444-444444444444\",\"protocol_version\":1}}`, and `{\"protocol\":\"akashic.local\",\"version\":1,\"kind\":\"error.response\",\"id\":\"77777777-7777-4777-8777-777777777777\",\"correlation_id\":\"55555555-5555-4555-8555-555555555555\",\"error\":{\"code\":\"protocol.malformed\",\"message\":\"malformed request\",\"retryable\":false}}`.",
+        "scenarios": [
+          {
+            "rawText": "- **WHEN** an authorized client sends health before handshake or sends a valid handshake/health request\n- **THEN** the daemon MUST return `protocol.malformed` for the first case without effect and MUST return a new response UUID correlated to each triggering request for the valid case"
+          }
+        ]
+      },
+      "requirements": [
+        {
+          "text": "After peer UID authorization, the first valid frame MUST be `handshake.request`; `health.request` before a successful handshake MUST return `protocol.malformed` without an effect; every response and error MUST receive a new UUID `id`; every response and error `correlation_id` MUST equal the triggering request `id`; and the following canonical bootstrap objects are valid illustrative examples whose UUID and semver placeholder values vary at runtime while their field names, types, kinds, payload shape, and correlation relationships are normative: `{\"protocol\":\"akashic.local\",\"version\":1,\"kind\":\"handshake.request\",\"id\":\"11111111-1111-4111-8111-111111111111\",\"payload\":{\"client_role\":\"jsonl\",\"client_version\":\"0.1.0\",\"client_instance_id\":\"22222222-2222-4222-8222-222222222222\"}}`, `{\"protocol\":\"akashic.local\",\"version\":1,\"kind\":\"handshake.response\",\"id\":\"33333333-3333-4333-8333-333333333333\",\"correlation_id\":\"11111111-1111-4111-8111-111111111111\",\"payload\":{\"daemon_version\":\"0.1.0\",\"daemon_instance_id\":\"44444444-4444-4444-8444-444444444444\",\"protocol_version\":1,\"capabilities\":[\"health\"]}}`, `{\"protocol\":\"akashic.local\",\"version\":1,\"kind\":\"health.request\",\"id\":\"55555555-5555-4555-8555-555555555555\",\"payload\":{}}`, `{\"protocol\":\"akashic.local\",\"version\":1,\"kind\":\"health.response\",\"id\":\"66666666-6666-4666-8666-666666666666\",\"correlation_id\":\"55555555-5555-4555-8555-555555555555\",\"payload\":{\"status\":\"ok\",\"daemon_version\":\"0.1.0\",\"daemon_instance_id\":\"44444444-4444-4444-8444-444444444444\",\"protocol_version\":1}}`, and `{\"protocol\":\"akashic.local\",\"version\":1,\"kind\":\"error.response\",\"id\":\"77777777-7777-4777-8777-777777777777\",\"correlation_id\":\"55555555-5555-4555-8555-555555555555\",\"error\":{\"code\":\"protocol.malformed\",\"message\":\"malformed request\",\"retryable\":false}}`.",
+          "scenarios": [
+            {
+              "rawText": "- **WHEN** an authorized client sends health before handshake or sends a valid handshake/health request\n- **THEN** the daemon MUST return `protocol.malformed` for the first case without effect and MUST return a new response UUID correlated to each triggering request for the valid case"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "spec": "runtime-contracts",
+      "operation": "ADDED",
+      "description": "Add requirement: The protocol identifier MUST be `akashic.local` and the protocol version MUST be unsigned integer 1; envelope fields MUST be `protocol` string, `version` unsigned integer, `kind` string, `id` UUID string, optional `correlation_id` UUID string, and exactly one of `payload` object or `error` object; request kinds MUST be exactly `handshake.request` and `health.request`, response kinds MUST be exactly `handshake.response`, `health.response`, and `error.response`; handshake payload MUST contain `client_role` enum `tui|jsonl|doctor`, `client_version` semver string, and `client_instance_id` UUID string; a compatible handshake response payload MUST contain `daemon_version` semver string, `daemon_instance_id` UUID string, `protocol_version` unsigned integer 1, and `capabilities` array containing exactly `health`; incompatible or incomplete handshakes MUST return `protocol.unsupported_version` or `protocol.malformed` without an effect.",
+      "requirement": {
+        "text": "The protocol identifier MUST be `akashic.local` and the protocol version MUST be unsigned integer 1; envelope fields MUST be `protocol` string, `version` unsigned integer, `kind` string, `id` UUID string, optional `correlation_id` UUID string, and exactly one of `payload` object or `error` object; request kinds MUST be exactly `handshake.request` and `health.request`, response kinds MUST be exactly `handshake.response`, `health.response`, and `error.response`; handshake payload MUST contain `client_role` enum `tui|jsonl|doctor`, `client_version` semver string, and `client_instance_id` UUID string; a compatible handshake response payload MUST contain `daemon_version` semver string, `daemon_instance_id` UUID string, `protocol_version` unsigned integer 1, and `capabilities` array containing exactly `health`; incompatible or incomplete handshakes MUST return `protocol.unsupported_version` or `protocol.malformed` without an effect.",
+        "scenarios": [
+          {
+            "rawText": "- **WHEN** a client sends a complete supported handshake request\n- **THEN** the daemon MUST return the exact versioned handshake response fields and capability"
+          },
+          {
+            "rawText": "- **WHEN** a handshake has wrong constants, types, role, version, or required fields\n- **THEN** the daemon MUST return the applicable structured protocol error and execute no effect"
+          }
+        ]
+      },
+      "requirements": [
+        {
+          "text": "The protocol identifier MUST be `akashic.local` and the protocol version MUST be unsigned integer 1; envelope fields MUST be `protocol` string, `version` unsigned integer, `kind` string, `id` UUID string, optional `correlation_id` UUID string, and exactly one of `payload` object or `error` object; request kinds MUST be exactly `handshake.request` and `health.request`, response kinds MUST be exactly `handshake.response`, `health.response`, and `error.response`; handshake payload MUST contain `client_role` enum `tui|jsonl|doctor`, `client_version` semver string, and `client_instance_id` UUID string; a compatible handshake response payload MUST contain `daemon_version` semver string, `daemon_instance_id` UUID string, `protocol_version` unsigned integer 1, and `capabilities` array containing exactly `health`; incompatible or incomplete handshakes MUST return `protocol.unsupported_version` or `protocol.malformed` without an effect.",
+          "scenarios": [
+            {
+              "rawText": "- **WHEN** a client sends a complete supported handshake request\n- **THEN** the daemon MUST return the exact versioned handshake response fields and capability"
+            },
+            {
+              "rawText": "- **WHEN** a handshake has wrong constants, types, role, version, or required fields\n- **THEN** the daemon MUST return the applicable structured protocol error and execute no effect"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "spec": "runtime-contracts",
+      "operation": "ADDED",
+      "description": "Add requirement: JSONL MUST be UTF-8 with exactly one JSON object per newline-delimited line, each line including its newline MUST be at most 1048576 bytes by default and configurable only within the stated range, malformed, invalid-UTF-8, incomplete, or oversized input MUST return `protocol.malformed` or `protocol.oversized` without a partial-frame effect, `health.request` payload MUST be `{}`, `health.response` payload MUST contain `status` equal to `ok`, daemon version, daemon instance ID, and protocol version 1, repeated health requests MUST be idempotent, and JSONL protocol records MUST go only to stdout while diagnostics go only to stderr.",
+      "requirement": {
+        "text": "JSONL MUST be UTF-8 with exactly one JSON object per newline-delimited line, each line including its newline MUST be at most 1048576 bytes by default and configurable only within the stated range, malformed, invalid-UTF-8, incomplete, or oversized input MUST return `protocol.malformed` or `protocol.oversized` without a partial-frame effect, `health.request` payload MUST be `{}`, `health.response` payload MUST contain `status` equal to `ok`, daemon version, daemon instance ID, and protocol version 1, repeated health requests MUST be idempotent, and JSONL protocol records MUST go only to stdout while diagnostics go only to stderr.",
+        "scenarios": [
+          {
+            "rawText": "- **WHEN** a valid `health.request` with `{}` is received\n- **THEN** the process MUST return the exact idempotent health response payload"
+          },
+          {
+            "rawText": "- **WHEN** a line exceeds 1048576 bytes including newline or is malformed, invalid UTF-8, or incomplete\n- **THEN** the process MUST return the applicable error response and MUST execute no effect"
+          }
+        ]
+      },
+      "requirements": [
+        {
+          "text": "JSONL MUST be UTF-8 with exactly one JSON object per newline-delimited line, each line including its newline MUST be at most 1048576 bytes by default and configurable only within the stated range, malformed, invalid-UTF-8, incomplete, or oversized input MUST return `protocol.malformed` or `protocol.oversized` without a partial-frame effect, `health.request` payload MUST be `{}`, `health.response` payload MUST contain `status` equal to `ok`, daemon version, daemon instance ID, and protocol version 1, repeated health requests MUST be idempotent, and JSONL protocol records MUST go only to stdout while diagnostics go only to stderr.",
+          "scenarios": [
+            {
+              "rawText": "- **WHEN** a valid `health.request` with `{}` is received\n- **THEN** the process MUST return the exact idempotent health response payload"
+            },
+            {
+              "rawText": "- **WHEN** a line exceeds 1048576 bytes including newline or is malformed, invalid UTF-8, or incomplete\n- **THEN** the process MUST return the applicable error response and MUST execute no effect"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

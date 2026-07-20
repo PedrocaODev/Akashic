@@ -1,0 +1,31 @@
+name: checks
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          components: rustfmt, clippy
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: Install pinned OpenSpec CLI
+        run: npm install --global @fission-ai/openspec@1.4.1
+      - name: Format
+        run: cargo fmt -- --check
+      - name: Clippy
+        run: cargo clippy --all-targets -- -D warnings
+      - name: Tests
+        run: cargo test --all-targets
+      - name: Documentation and parsed requirements
+        run: python3 scripts/check_docs.py
+      - name: Structural check regression tests
+        run: python3 -m unittest scripts/test_check_docs.py
+      - name: Strict OpenSpec validation
+        run: openspec validate --all --strict --no-interactive
