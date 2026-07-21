@@ -1,6 +1,8 @@
 # Security
 
-Akashic is pre-implementation; no runtime security guarantees should be inferred from this repository yet.
+Only the bootstrap runtime is implemented. Its documented Linux security
+boundary is covered by its verification evidence; broader task sandboxing and
+provider security remain future work.
 
 ## Design baseline
 

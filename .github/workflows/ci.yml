@@ -27,5 +27,7 @@ jobs:
         run: python3 scripts/check_docs.py
       - name: Structural check regression tests
         run: python3 -m unittest scripts/test_check_docs.py
+      - name: Validate vendored house-style schema
+        run: openspec schema validate house-style
       - name: Strict OpenSpec validation
         run: openspec validate --all --strict --no-interactive

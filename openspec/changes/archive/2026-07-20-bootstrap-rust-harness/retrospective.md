@@ -1,7 +1,9 @@
-# Retrospective status: VERIFIED LOCALLY — ACCEPTANCE PENDING
+# Retrospective status: ACCEPTED WITH WAIVERS
 
-This retrospective records implementation work and executed checks. It is not
-an acceptance, hosted-CI, or delivery claim.
+This retrospective records implementation work, local checks, and successful
+hosted CI. Human acceptance is complete with the documented waiver: cross-UID
+peer rejection was conditionally skipped when `setpriv` could not perform UID
+switching. Explicit delivery remains a separate boundary.
 
 ## What shipped
 - The minimal Rust executable with daemon, TUI, JSONL, doctor, and version
@@ -31,7 +33,6 @@ an acceptance, hosted-CI, or delivery claim.
   corrected those failures.
 
 ## Follow-ups
-- Run the hosted CI workflow.
-- Obtain human acceptance and make the explicit delivery/archive decision.
+- Make the explicit delivery decision separately.
 - Keep Slice 6 evidence separate from future task, provider, sandbox, storage,
   and non-Linux portability work.

@@ -2,7 +2,9 @@
 
 ## Purpose
 
-Akashic is a pre-implementation, open-source, local-first Rust AI coding harness for Linux, WSL2, and headless Linux.
+Akashic is an open-source, local-first Rust AI coding harness for Linux, WSL2,
+and headless Linux. Only the bootstrap executable baseline is implemented;
+dependent runtime systems remain future work.
 
 ## Invariants
 

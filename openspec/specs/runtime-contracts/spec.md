@@ -1,7 +1,8 @@
 # runtime-contracts Specification
 
 ## Purpose
-TBD - created by archiving change bootstrap-rust-harness. Update Purpose after archive.
+Defines the bootstrap daemon's secure runtime, protocol, identity, and
+shutdown contracts.
 ## Requirements
 ### Requirement: Socket path and permissions
 The daemon MUST use `${XDG_RUNTIME_DIR}/akashic` only when the XDG runtime path is absolute, its ancestors are non-symlinked and owned by root or the current UID and not group/other writable, and the selected runtime base and its `akashic` child are current-UID-owned, non-symlinked, and not group/other accessible, otherwise it MUST use `${XDG_STATE_HOME:-$HOME/.local/state}/akashic/run` with the same selected-base and child checks; ordinary root-owned ancestors such as `/`, `/run`, and `/home` MUST be allowed when they are not group/other writable; names MUST be `daemon.sock` and `daemon.lock`; the Akashic directory MUST be mode 0700, lock and socket MUST be mode 0600, creation MUST use umask 077, and symlinks or non-owned components MUST be rejected.
@@ -60,4 +61,3 @@ JSONL MUST be UTF-8 with exactly one JSON object per newline-delimited line, eac
 #### Scenario: Framing violation
 - **WHEN** a line exceeds 1048576 bytes including newline or is malformed, invalid UTF-8, or incomplete
 - **THEN** the process MUST return the applicable error response and MUST execute no effect
-

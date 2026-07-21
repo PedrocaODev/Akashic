@@ -1,12 +1,14 @@
-# Verification status: VERIFIED LOCALLY — ACCEPTANCE PENDING
+# Verification status: ACCEPTED WITH WAIVERS
 
-The bootstrap implementation and local evidence path are verified below. This
-does not claim hosted CI completion, human acceptance, or explicit delivery.
+The bootstrap implementation passed local verification and hosted CI. Human
+acceptance is complete with the documented waiver: cross-UID peer rejection
+was conditionally skipped when `setpriv` could not perform UID switching.
+Explicit delivery remains a separate boundary.
 
 ## Retained parsed requirements evidence
 
 - Exact command output is retained at
-  `openspec/changes/bootstrap-rust-harness/parsed-requirements.json` from
+  `openspec/changes/archive/2026-07-20-bootstrap-rust-harness/parsed-requirements.json` from
   `openspec show bootstrap-rust-harness --json`.
 - `python3 scripts/check_docs.py` parses that artifact and checks complete
   requirement bodies, nonempty scenarios, explicit WHEN/THEN clauses, and
@@ -34,6 +36,10 @@ does not claim hosted CI completion, human acceptance, or explicit delivery.
 - `git diff --check` — passed; untracked intended files are covered by the
   project documentation check's whitespace scan.
 
+## Hosted CI
+
+- Hosted workflow passed: [run 29786300215](https://github.com/PedrocaODev/Akashic/actions/runs/29786300215).
+
 ## Qualification
 
 - Secure runtime, Unix locking, `SO_PEERCRED`, signal handling, and the secure
@@ -46,8 +52,7 @@ does not claim hosted CI completion, human acceptance, or explicit delivery.
 - No providers, task execution, sandbox, storage/replay, or non-Linux fallback
   behavior is claimed by this bootstrap.
 
-## Pending acceptance boundaries
+## Acceptance boundaries
 
-- Hosted CI workflow execution has not been run in this environment.
-- Human acceptance, explicit delivery, and archive/acceptance workflow remain
-  pending.
+- Human acceptance is complete with the documented cross-UID waiver.
+- Explicit delivery remains separate and has not been performed.

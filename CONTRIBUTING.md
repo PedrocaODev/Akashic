@@ -1,6 +1,8 @@
 # Contributing
 
-Akashic is in pre-implementation research. Contributions should clarify accepted behavior rather than inventing unapproved APIs or claiming unfinished features.
+Akashic has an implemented bootstrap baseline but remains in staged
+development. Contributions should clarify accepted behavior rather than
+inventing unapproved APIs or claiming unfinished dependent features.
 
 ## Before changing files
 

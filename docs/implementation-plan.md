@@ -1,6 +1,7 @@
 # Implementation plan
 
-**Status:** planning baseline; nothing here claims implementation. Normative behavior remains in `openspec/`.
+**Status:** bootstrap baseline implemented; `build-artifact-runtime` is the
+next milestone. Normative behavior remains in `openspec/`.
 
 ## Boundaries and ownership
 
@@ -14,7 +15,7 @@ Rust is the implementation language and SQLite the local append-only store. Nati
 
 | Change | Depends on | Scope / non-goal | Exit gate and documentation |
 |---|---|---|---|
-| `bootstrap-rust-harness` | none | workspace, executable skeleton, no product behavior | reproducible build checks; architecture/development docs |
+| `bootstrap-rust-harness` | none | implemented workspace and executable baseline; no dependent product behavior | reproducible build checks; architecture/development docs |
 | `build-artifact-runtime` | bootstrap-rust-harness | state, Markdown/SQLite boundary, events; no providers | replay and ownership tests; artifacts/replay docs |
 | `add-provider-runtime` | build-artifact-runtime | normalized official-provider access; no arbitrary credential import | credential and routing evidence; credentials doc |
 | `secure-worktree-execution` | build-artifact-runtime | task integration worktree and native profiles; no silent fallback | denial/escape tests; sandbox doc |

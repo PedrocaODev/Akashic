@@ -1,6 +1,8 @@
 # Roadmap
 
-This sequencing is explanatory; each change requires an approved OpenSpec change. See the [through-v1 implementation plan](implementation-plan.md).
+The bootstrap baseline is implemented; `build-artifact-runtime` is the next
+milestone. This sequencing is explanatory; each later change requires an
+approved OpenSpec change. See the [through-v1 implementation plan](implementation-plan.md).
 
 ```mermaid
 flowchart LR
@@ -39,7 +41,7 @@ flowchart LR
 
 | ID | Direct dependencies | Deliverable boundary | Non-goal | Acceptance boundary |
 |---|---|---|---|---|
-| `bootstrap-rust-harness` | none | Rust workspace and executable baseline | no product behavior | reproducible build |
+| `bootstrap-rust-harness` | none | implemented Rust workspace and executable baseline | no dependent product behavior | reproducible build |
 | `build-artifact-runtime` | bootstrap-rust-harness | owned Markdown/SQLite events and replay | no providers | event, projection, migration evidence |
 | `add-provider-runtime` | build-artifact-runtime | normalized allowlisted providers | no CLI-token import | credential/redaction evidence |
 | `secure-worktree-execution` | build-artifact-runtime | daemon-owned task integration worktree and native profiles | no silent fallback | capability denial and recovery evidence |

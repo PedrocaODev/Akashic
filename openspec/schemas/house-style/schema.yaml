@@ -1,0 +1,72 @@
+name: house-style
+version: 2
+description: Global house-style workflow pack for OpenSpec and OpenCode
+
+artifacts:
+  - id: proposal
+    generates: proposal.md
+    description: Why this change matters and what it covers
+    template: proposal.md
+    instruction: >
+      Write a concise proposal. Explain the problem or opportunity,
+      list concrete changes, identify new or modified capabilities,
+      and note impact, risks, and scope boundaries.
+    requires: []
+  - id: design
+    generates: design.md
+    description: Context, decisions, trade-offs, and risks
+    template: design.md
+    instruction: >
+      Document the design. State current context and constraints,
+      set explicit goals and non-goals, record key decisions with
+      rationale, and list risks and accepted trade-offs.
+    requires: [proposal]
+  - id: specs
+    generates: specs/**/*.md
+    description: Delta specifications for changed capabilities
+    template: spec.md
+    instruction: >
+      Write one delta spec per changed capability. For each requirement
+      use ADDED, MODIFIED, or REMOVED sections with Given/When/Then
+      scenarios as acceptance criteria.
+    requires: [design]
+  - id: tasks
+    generates: tasks.md
+    description: Ordered implementation task list
+    template: tasks.md
+    instruction: >
+      Break work into numbered task groups with ordered checkboxes.
+      Each task should be small enough to implement and test in one pass.
+      Order groups by dependency.
+    requires: [specs]
+  - id: plan
+    generates: plan.md
+    description: Implementation plan with test-first slices, review checkpoints, and verification intent
+    template: plan.md
+    instruction: >
+      Define ordered implementation slices. Each slice lists its tasks,
+      states what test is written first, and notes any explicit TDD
+      exception. Add review checkpoints after key slices, specify
+      final verification commands, and group intended commits.
+    requires: [tasks]
+  - id: verify
+    generates: verify.md
+    description: Post-review final verification record
+    template: verify.md
+    instruction: >
+      Record the final verification run. List pre-conditions (review
+      complete, tests pass, lint clean), the exact commands executed
+      with results, and the overall outcome.
+    requires: [plan]
+  - id: retrospective
+    generates: retrospective.md
+    description: Closeout artifact created before or during archive
+    template: retrospective.md
+    instruction: >
+      Write a brief closeout. Summarize what shipped, what went well,
+      what to watch next time, and any concrete follow-ups.
+    requires: [plan]
+
+apply:
+  requires: [plan]
+  tracks: tasks.md

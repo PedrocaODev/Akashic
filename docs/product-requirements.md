@@ -2,7 +2,10 @@
 
 ## Status and boundary
 
-This is the explanatory accepted-decision index for a pre-implementation project. Normative requirements, scenarios, and acceptance criteria belong in `openspec/`; this document and linked decisions must not substitute for those specs. See the [implementation plan](implementation-plan.md), [lifecycle](lifecycle-and-outcomes.md), [artifacts and replay](artifacts-and-replay.md), [sandboxing](sandboxing.md), [credentials](credentials-and-routing.md), [privacy](privacy-and-retention.md), [knowledge governance](knowledge-governance.md), and [qualification matrix](qualification-matrix.md).
+This is the explanatory accepted-decision index for a staged project whose
+bootstrap baseline is implemented. Normative requirements, scenarios, and
+acceptance criteria belong in `openspec/`; dependent systems remain future
+work. See the [implementation plan](implementation-plan.md), [lifecycle](lifecycle-and-outcomes.md), [artifacts and replay](artifacts-and-replay.md), [sandboxing](sandboxing.md), [credentials](credentials-and-routing.md), [privacy](privacy-and-retention.md), [knowledge governance](knowledge-governance.md), and [qualification matrix](qualification-matrix.md).
 
 ## Product
 

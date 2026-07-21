@@ -1,7 +1,8 @@
 # project-foundation Specification
 
 ## Purpose
-TBD - created by archiving change bootstrap-rust-harness. Update Purpose after archive.
+Defines the executable modes, configuration, and lifecycle contracts for the
+implemented bootstrap harness.
 ## Requirements
 ### Requirement: Command contracts
 The executable MUST support exactly `akashic daemon`, `akashic tui`, `akashic run --jsonl`, `akashic doctor`, and `akashic version`; CLI parsing MUST occur before mode entry, and invalid syntax that does not successfully select `doctor` MUST emit generic `usage.invalid` JSON on stderr, empty stdout, and exit 2; `daemon` MUST start one daemon and block until bounded shutdown; `run --jsonl` MUST connect to the daemon and accept only bootstrap handshake/health JSONL on stdin while writing protocol records to stdout and diagnostics to stderr; once `akashic doctor` mode is successfully selected, doctor MUST wrap all subsequent config, runtime-directory, socket, daemon availability, handshake, and health outcomes in exactly one stdout JSON object with `status` enum `ok|degraded|error`, `version` semver string, `protocol` object `{ "identifier": "akashic.local", "version": 1 }`, and `checks` array objects containing `name` string, `status` enum `ok|warning|error`, nullable stable `code`, and redacted `message` string, MUST NOT emit the generic CLI error object for those outcomes, MUST return overall `degraded` with a `daemon` check code `lifecycle.daemon_unavailable` and exit 4 when no socket/listener exists but local prerequisites are safe, MUST return overall `ok` and exit 0 after successful checks and health, and MUST return overall `error` and exit 1 for invalid config/path/socket/handshake; `version` MUST print exactly `akashic <semver>` plus newline and exit zero without daemon access; `tui` MUST connect, handshake, display only a minimal daemon health/version screen, support quit/cancel, and not claim task functionality; unknown or conflicting usage MUST produce a structured failure and nonzero exit.
@@ -73,4 +74,3 @@ SIGINT and SIGTERM MUST initiate graceful shutdown, any second SIGINT after grac
 #### Scenario: Timed-out signal
 - **WHEN** children do not finish before the configured timeout
 - **THEN** the process MUST force termination and return `lifecycle.shutdown_timeout` with nonzero status
-
