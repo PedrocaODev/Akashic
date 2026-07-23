@@ -19,3 +19,5 @@ Rust code must preserve the deterministic control-plane boundary, explicit secur
 ## Review
 
 Describe the problem, the relevant accepted decision or spec, verification performed, and any unresolved limitation. Do not include credentials, captured secrets, or raw private task data.
+
+Changes go through pull requests targeting `main`. `@PedrocaODev` is the code owner and gatekeeper. Every pull request must describe its verification and any unresolved limitations.
