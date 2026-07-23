@@ -9,6 +9,7 @@ use std::time::{Duration, Instant};
 #[cfg(not(target_os = "linux"))]
 compile_error!("Akashic bootstrap secure runtime is Linux-only; qualify non-Linux manually");
 
+mod artifacts;
 mod config;
 mod json;
 mod runtime;
@@ -163,6 +164,20 @@ fn daemon(config: &Config) -> i32 {
     let mut runtime = match runtime::acquire() {
         Ok(runtime) => runtime,
         Err(error) => return runtime_startup_error(error),
+    };
+    let store_path = match runtime::artifact_store_path() {
+        Ok(path) => path,
+        Err(error) => return runtime_startup_error(error),
+    };
+    let _store = match artifacts::Store::open(&store_path) {
+        Ok(store) => store,
+        Err(error) => {
+            return startup_error(
+                error.code(),
+                error.message(),
+                startup_exit_for_code(error.code()),
+            );
+        }
     };
     let listener = match runtime.bind() {
         Ok(listener) => listener,

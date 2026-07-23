@@ -5,6 +5,10 @@ edition = "2021"
 license = "Apache-2.0"
 description = "Local-first Rust AI coding harness"
 
+[dependencies]
+rusqlite = { version = "0.32", features = ["bundled"] }
+sha2 = "0.10"
+
 [[bin]]
 name = "akashic"
 path = "src/main.rs"

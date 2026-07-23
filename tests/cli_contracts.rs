@@ -30,6 +30,7 @@ fn run(args: &[&str], runtime: &Path) -> Output {
     Command::new(binary())
         .args(args)
         .env("XDG_RUNTIME_DIR", runtime)
+        .env("XDG_STATE_HOME", runtime.join("state"))
         .output()
         .expect("run akashic")
 }
@@ -52,6 +53,7 @@ fn start_daemon(runtime: &Path) -> Child {
     let child = Command::new(binary())
         .arg("daemon")
         .env("XDG_RUNTIME_DIR", runtime)
+        .env("XDG_STATE_HOME", runtime.join("state"))
         .stdin(Stdio::null())
         .stdout(Stdio::piped())
         .stderr(Stdio::piped())

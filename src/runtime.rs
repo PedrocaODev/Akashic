@@ -1,3 +1,5 @@
+#![allow(dead_code)]
+
 use std::ffi::CString;
 use std::fs::{self, File, OpenOptions};
 use std::io;
@@ -104,12 +106,15 @@ pub(crate) fn probe() -> Result<Paths, RuntimeError> {
 }
 
 fn fallback_paths() -> Result<Paths, RuntimeError> {
-    let home = std::env::var_os("HOME")
-        .map(PathBuf::from)
-        .ok_or(RuntimeError::Unsafe)?;
     let state = std::env::var_os("XDG_STATE_HOME")
         .map(PathBuf::from)
-        .unwrap_or_else(|| home.join(".local/state"));
+        .or_else(|| {
+            std::env::var_os("HOME")
+                .map(PathBuf::from)
+                .map(|home| home.join(".local/state"))
+        })
+        .or_else(|| std::env::var_os("XDG_RUNTIME_DIR").map(PathBuf::from))
+        .ok_or(RuntimeError::Unsafe)?;
     if !state.is_absolute() || !base_is_safe(&state) {
         return Err(RuntimeError::Unsafe);
     }
@@ -176,8 +181,9 @@ fn trusted_ancestors(path: &Path) -> bool {
             Ok(metadata) => {
                 if metadata.file_type().is_symlink()
                     || (metadata.uid() != 0 && metadata.uid() != current_uid())
-                    || metadata.permissions().mode() & 0o7000 != 0
-                    || metadata.permissions().mode() & 0o022 != 0
+                    || metadata.permissions().mode() & 0o6000 != 0
+                    || (metadata.permissions().mode() & 0o022 != 0
+                        && metadata.permissions().mode() & 0o1000 == 0)
                 {
                     return false;
                 }
@@ -199,6 +205,18 @@ fn ensure_directories(paths: &Paths) -> Result<(), RuntimeError> {
         let _ = open_directory_chain(directory, true)?;
     }
     Ok(())
+}
+
+pub(crate) fn artifact_store_path() -> Result<PathBuf, RuntimeError> {
+    let state = std::env::var_os("XDG_STATE_HOME")
+        .map(PathBuf::from)
+        .or_else(|| std::env::var_os("HOME").map(|home| PathBuf::from(home).join(".local/state")))
+        .ok_or(RuntimeError::Unsafe)?;
+    if !state.is_absolute() {
+        return Err(RuntimeError::Unsafe);
+    }
+    let _directory = open_directory_chain(&state.join("akashic"), true)?;
+    Ok(state.join("akashic/artifacts.sqlite"))
 }
 
 fn open_directory(path: &Path) -> Result<File, RuntimeError> {
@@ -246,7 +264,7 @@ fn open_directory_chain(path: &Path, create: bool) -> Result<File, RuntimeError>
         let metadata = child.metadata().map_err(|_| RuntimeError::Unsafe)?;
         if metadata.file_type().is_symlink()
             || !metadata.is_dir()
-            || metadata.permissions().mode() & 0o7000 != 0
+            || metadata.permissions().mode() & 0o6000 != 0
         {
             return Err(RuntimeError::Unsafe);
         }
@@ -255,7 +273,8 @@ fn open_directory_chain(path: &Path, create: bool) -> Result<File, RuntimeError>
                 return Err(RuntimeError::Unsafe);
             }
         } else if (metadata.uid() != 0 && metadata.uid() != current_uid())
-            || metadata.permissions().mode() & 0o022 != 0
+            || (metadata.permissions().mode() & 0o022 != 0
+                && metadata.permissions().mode() & 0o1000 == 0)
         {
             return Err(RuntimeError::Unsafe);
         }

@@ -43,6 +43,7 @@ fn start(root: &Path, xdg_runtime: &Path) -> Child {
         .arg("daemon")
         .current_dir(root)
         .env("XDG_RUNTIME_DIR", xdg_runtime)
+        .env("XDG_STATE_HOME", root.join("state"))
         .env("XDG_CONFIG_HOME", root.join("config"))
         .env("HOME", root.join("home"))
         .stdin(Stdio::null())
