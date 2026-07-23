@@ -6,6 +6,17 @@ States proceed through `preflight`, `contracted`, optional `research`, `planned`
 
 Transitions require the prior state’s evidence and applicable supervised or guarded gate. Human approval binds to the task contract, plan, security profile, provider selection, and relevant artifact identities. A material change, invalidated evidence, changed policy, or changed inputs invalidates approval and returns the task to the applicable gate. `waiting_blocked` is resumable; terminal `blocked` is assigned only when a human closes the task without satisfying the prerequisite.
 
+Approval gates are explicit: (1) task contract and plan, before execution;
+(2) elevated security, before requesting a level above the default boundary;
+(3) provider use, before sending task data to an approved provider; (4)
+learning activation, after proposal/evaluation and before activation; and (5)
+explicit delivery, after verification, retrospective, and human acceptance.
+Each approval records the authorized actor, decision, scope, inputs/artifact
+identities, and supporting evidence. A material scope or input change, policy
+change, actor change, or invalidated/stale evidence invalidates the approval
+and reopens the corresponding gate; approval is never inferred from simulation
+or an earlier unrelated decision.
+
 Reviewer findings are `open`, `acknowledged`, `fixed`, `waived`, `rejected`, or `stale`; unresolved findings block acceptance unless an explicit waiver is allowed. When fixes are exhausted, the task must choose a bounded outcome rather than loop: revise plan, accept with waiver, accept partially, abort, or fail. The daemon records the actor and reason. An authorized human assigns `aborted` when deliberately stopping without claiming success; the runtime assigns `failed` when execution or required verification fails and no eligible waiver or partial acceptance is granted.
 
 - **verified:** required checks passed with evidence and no disallowed open findings.

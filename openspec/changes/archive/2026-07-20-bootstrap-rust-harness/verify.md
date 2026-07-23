@@ -1,9 +1,10 @@
-# Verification status: ACCEPTED WITH WAIVERS
+# Verification status: COMPLETE WITH WAIVER
 
-The bootstrap implementation passed local verification and hosted CI. Human
-acceptance is complete with the documented waiver: cross-UID peer rejection
-was conditionally skipped when `setpriv` could not perform UID switching.
-Explicit delivery remains a separate boundary.
+The bootstrap implementation passed local verification and hosted CI. The
+cross-UID peer rejection qualification was conditionally skipped when `setpriv`
+could not perform UID switching, and that waiver remains documented below.
+Human acceptance is pending and is not evidenced in this repository. Explicit
+delivery remains blocked pending human acceptance.
 
 ## Retained parsed requirements evidence
 
@@ -46,13 +47,18 @@ Explicit delivery remains a separate boundary.
   protocol boundary are Linux-only and explicitly unsupported on non-Linux
   targets.
 - WSL2 Linux-path tests passed. The `setpriv --reuid=65534 --regid=65534
-  --clear-groups true` peer-UID qualification exited 127 with `setresuid
-  failed: Operation not permitted`; the unauthorized-peer test skips only this
-  environment limitation and makes no success claim for that branch.
+   --clear-groups true` peer-UID qualification exited 127 with `setresuid
+   failed: Operation not permitted`; the unauthorized-peer test skips only this
+   environment limitation and makes no success claim for that branch.
+- Before public-v1 qualification or delivery, successful cross-UID peer
+  rejection MUST be requalified on a Linux environment capable of UID
+  switching. Until then, this waiver remains visible and no success claim is
+  made for cross-UID peer rejection.
 - No providers, task execution, sandbox, storage/replay, or non-Linux fallback
   behavior is claimed by this bootstrap.
 
 ## Acceptance boundaries
 
-- Human acceptance is complete with the documented cross-UID waiver.
-- Explicit delivery remains separate and has not been performed.
+- Verification is complete with the documented cross-UID waiver.
+- Human acceptance is pending and is not evidenced in this repository.
+- Explicit delivery remains blocked pending human acceptance.

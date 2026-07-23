@@ -4,6 +4,10 @@ The bootstrap baseline is implemented; `build-artifact-runtime` is the next
 milestone. This sequencing is explanatory; each later change requires an
 approved OpenSpec change. See the [through-v1 implementation plan](implementation-plan.md).
 
+The bootstrap daemon, TUI, and JSONL paths are health-only harness interfaces;
+they are not yet product-capable clients. Product-capable daemon/client
+behavior begins with `expose-daemon-and-clients` and remains a future milestone.
+
 ```mermaid
 flowchart LR
  A[bootstrap] --> B[artifact runtime]
@@ -41,12 +45,12 @@ flowchart LR
 
 | ID | Direct dependencies | Deliverable boundary | Non-goal | Acceptance boundary |
 |---|---|---|---|---|
-| `bootstrap-rust-harness` | none | implemented Rust workspace and executable baseline | no dependent product behavior | reproducible build |
+| `bootstrap-rust-harness` | none | implemented Rust workspace and health-only executable baseline | no dependent product behavior or product-capable clients | reproducible build |
 | `build-artifact-runtime` | bootstrap-rust-harness | owned Markdown/SQLite events and replay | no providers | event, projection, migration evidence |
 | `add-provider-runtime` | build-artifact-runtime | normalized allowlisted providers | no CLI-token import | credential/redaction evidence |
 | `secure-worktree-execution` | build-artifact-runtime | daemon-owned task integration worktree and native profiles | no silent fallback | capability denial and recovery evidence |
 | `implement-agent-convergence` | build-artifact-runtime + add-provider-runtime + secure-worktree-execution | fixed core and lifecycle | no unrestricted dynamic agents | review and gate evidence |
-| `expose-daemon-and-clients` | implement-agent-convergence | daemon, TUI, JSONL processes | no alternate authority | protocol/crash evidence |
+| `expose-daemon-and-clients` | implement-agent-convergence | product-capable daemon, TUI, and JSONL clients | no alternate authority | protocol/crash evidence |
 | `add-declarative-tools` | implement-agent-convergence + expose-daemon-and-clients | Agent Skills/MCP/declarative integrations | no executable plugin ABI | bounded loading evidence |
 | `integrate-code-intelligence` | secure-worktree-execution + implement-agent-convergence | Graphify code adapter, optional LSP | no source replacement | source-authority evidence |
 | `add-parallel-worktree-execution` | secure-worktree-execution + implement-agent-convergence | bounded sibling writers | no daemon bypass | conflict/integration evidence |

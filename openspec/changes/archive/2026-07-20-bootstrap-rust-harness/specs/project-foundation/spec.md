@@ -17,7 +17,7 @@ The executable MUST support exactly `akashic daemon`, `akashic tui`, `akashic ru
 
 #### Scenario: Invalid config inside doctor
 - **WHEN** `akashic doctor` is successfully selected and config loading fails
-- **THEN** stdout MUST contain exactly one doctor result with overall `error`, a check carrying `config.invalid` or the applicable config code, and no generic CLI error object
+- **THEN** stdout MUST contain exactly one doctor result with overall `error`, a check carrying `config.invalid` or the applicable config code, no generic CLI error object, and the process MUST exit 1
 
 #### Scenario: No daemon inside doctor
 - **WHEN** `akashic doctor` is successfully selected, local prerequisites are safe, and no socket/listener exists
@@ -46,7 +46,7 @@ Every bootstrap error object MUST contain `code` as a stable string, `message` a
 - **THEN** the response MUST use the applicable stable code and MUST contain no raw secret value
 
 ### Requirement: Error destinations and exits
-Non-JSONL CLI or startup errors before successful mode selection, excluding post-selection doctor results, MUST emit exactly one JSON error object on process stderr and nothing on process stdout; after valid framing, `akashic run --jsonl` request-level protocol errors MUST use `error.response` on that process stdout; after peer authentication, daemon socket request errors MUST use `error.response` over that client's Unix socket connection and MUST NOT use daemon process stdout; post-selection doctor config, runtime, socket, availability, handshake, and health outcomes MUST use exactly one doctor result on stdout instead of the generic error object; diagnostics MUST remain on stderr; CLI or startup exit codes MUST be 2 for usage/configuration, 3 for protocol/authorization, 4 for `lifecycle.daemon_running`, 124 for `lifecycle.shutdown_timeout`, and 1 for internal errors; request-level JSONL errors MUST NOT terminate a healthy stream unless framing continuation is unsafe.
+Non-JSONL CLI or startup errors before successful mode selection, excluding post-selection doctor results, MUST emit exactly one JSON error object on process stderr and nothing on process stdout; after valid framing, `akashic run --jsonl` request-level protocol errors MUST use `error.response` on that process stdout; after peer authentication, daemon socket request errors MUST use `error.response` over that client's Unix socket connection and MUST NOT use daemon process stdout; post-selection doctor config, runtime, socket, availability, handshake, and health outcomes MUST use exactly one doctor result on stdout instead of the generic error object; diagnostics MUST remain on stderr; except for successfully selected `doctor` mode, CLI or startup exit codes MUST be 2 for usage/configuration, 3 for protocol/authorization, 4 for `lifecycle.daemon_running`, 124 for `lifecycle.shutdown_timeout`, and 1 for internal errors; request-level JSONL errors MUST NOT terminate a healthy stream unless framing continuation is unsafe.
 
 #### Scenario: CLI error destination
 - **WHEN** a non-JSONL CLI command fails validation
